@@ -11,10 +11,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ImageDownloader : NSObject
-
++ (instancetype) shareDownloader;
 //开始下载图像
-+ (void)startDownloadImage:(NSString *)imageUrl indexPath:(NSIndexPath*)indexPath completion:(void (^)(UIImage* image))completion;
-+ (UIImage *)loadLocalImage:(NSString *)imageUrl;
+- (void)updateCell:(UITableViewCell*)cell imageUrl:(NSString*)imageUrl placeholderImage:(UIImage*)placeholderImage;
+- (void)startDownloadImage:(NSString *)imageUrl completion:(void (^)(UIImage* image))completion;
+- (UIImage *)loadLocalImage:(NSString *)imageUrl;
 
 // (imgUrl, image)
 @property(class, nonatomic, strong)NSMutableDictionary* imageDics;

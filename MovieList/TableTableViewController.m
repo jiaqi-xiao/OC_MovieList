@@ -33,7 +33,7 @@
     
     [self getData];
     
-//    self.tableView.rowHeight = 200;
+    self.tableView.rowHeight = 200;
     
     [self.tableView registerClass:[TableViewCell class] forCellReuseIdentifier:@"cell"];
 }
@@ -125,7 +125,7 @@
                     
                     // three times jsonitem
                     NSMutableArray *threeJson = [[NSMutableArray alloc] init];
-                    for (int i = 0; i < 5; i++) {
+                    for (int i = 0; i < 1; i++) {
                         [threeJson addObjectsFromArray:jsonResponse];
                     }
                     int i = 0; // row counter

@@ -11,8 +11,6 @@
 
 @interface TableViewCell ()
 
-@property (nonatomic, assign) BOOL needDisplay; //NO
-
 @end
 
 @implementation TableViewCell
@@ -48,23 +46,27 @@
     
     // init dictionary
 //    [ImageDownloader imageDics];
-    UIImage* image = [ImageDownloader loadLocalImage:data.imgUrl];
-    if (!image) {
-        self.imageView.image = [UIImage imageNamed:@"placeholder.jpg"];
-
-        // image
-        [ImageDownloader startDownloadImage:data.imgUrl indexPath:indexPath completion:^(UIImage *image) {
-            // 如果当前行还在当前屏幕内，就刷新，否则不刷新
-            if ([tableView.indexPathsForVisibleRows containsObject: indexPath]) {
-                self.imageView.image = image;
-            }
-        }];
-
-    } else {
-        if ([tableView.indexPathsForVisibleRows containsObject: indexPath]) {
-            self.imageView.image = image;
-        }
-    }
+    
+    
+//    UIImage* image = [ImageDownloader loadLocalImage:data.imgUrl];
+//    if (!image) {
+//        self.imageView.image = [UIImage imageNamed:@"placeholder.jpg"];
+//
+//        // image
+//        [ImageDownloader startDownloadImage:data.imgUrl indexPath:indexPath completion:^(UIImage *image) {
+//            // 如果当前行还在当前屏幕内，就刷新，否则不刷新
+//            if ([tableView.indexPathsForVisibleRows containsObject: indexPath]) {
+//                self.imageView.image = image;
+//            }
+//        }];
+//
+//    } else {
+//        if ([tableView.indexPathsForVisibleRows containsObject: indexPath]) {
+//            self.imageView.image = image;
+//        }
+//    }
+    
+    [[ImageDownloader shareDownloader] updateCell:self imageUrl:data.imgUrl placeholderImage:[UIImage imageNamed:@"placeholder.jpg"]];
     
 }
 

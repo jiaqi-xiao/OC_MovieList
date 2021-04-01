@@ -8,21 +8,46 @@
 #import "ImageDownloader.h"
 #import "UIKit/UIKit.h"
 
-static NSMutableDictionary *imageDics;
+//static NSMutableDictionary *imageDics;
+
+static ImageDownloader* downloader = nil;
 
 @implementation ImageDownloader
 
 @dynamic imageDics;
 #pragma mark - 异步加载
 
-+ (void)load {
-    imageDics = [NSMutableDictionary dictionary];
-}
+//+ (void)load {
+//    imageDics = [NSMutableDictionary dictionary];
+//}
 //+ (void)addImageDics:(NSString*)key imageData:(UIImage*)image{
 //    imageDics[key] = image;
 //}
 
-+ (void)startDownloadImage:(NSString *)imageUrl indexPath:(NSIndexPath*)indexPath completion:(void (^)(UIImage* image))completion
+
++ (instancetype) shareDownloader {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        downloader = [[self alloc] init];
+    });
+    return downloader;
+}
+
+- (void)updateCell:(UITableViewCell*)cell imageUrl:(NSString*)imageUrl placeholderImage:(UIImage*)placeholderImage {
+    UIImage* image = [self loadLocalImage:imageUrl];
+    
+    if (!image) {
+        cell.imageView.image = placeholderImage;
+            [self startDownloadImage:imageUrl completion:^(UIImage *image) {
+                cell.imageView.image = image;
+            }];
+
+    } else {
+        cell.imageView.image = image;
+    }
+}
+
+- (void)startDownloadImage:(NSString *)imageUrl completion:(void (^)(UIImage* image))completion
 {
     // 先判断本地沙盒是否已经存在图像，存在直接获取，不存在再下载，下载后保存
     // 存在沙盒的Caches的子文件夹DownloadImages中
@@ -47,7 +72,7 @@ static NSMutableDictionary *imageDics;
                 [imageData writeToFile:[self imageFilePath:imageUrl] atomically:YES];
 //                NSLog(@"write image path: %@", [self imageFilePath:imageUrl]);
 //            }
-                
+
 //            //write to model
 //            [imageDics setObject:image forKey:[self imageFilePath:imageUrl]];
 //            NSLog(@"write image to memory");
@@ -58,6 +83,7 @@ static NSMutableDictionary *imageDics;
                 }
             });
         });
+
     }
     
     
@@ -73,7 +99,7 @@ static NSMutableDictionary *imageDics;
 
 
 #pragma mark - 加载本地图像
-+ (UIImage *)loadLocalImage:(NSString *)imageUrl
+- (UIImage *)loadLocalImage:(NSString *)imageUrl
 {
     UIImage* image = nil;
 //    UIImage* image = imageDics[imageUrl];
@@ -91,7 +117,7 @@ static NSMutableDictionary *imageDics;
 }
 
 #pragma mark - 获取图像路径
-+ (NSString *)imageFilePath:(NSString *)imageUrl
+- (NSString *)imageFilePath:(NSString *)imageUrl
 {
     // 获取caches文件夹路径, Documents,
     NSString * cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
