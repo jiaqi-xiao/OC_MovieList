@@ -33,7 +33,7 @@
     
     [self getData];
     
-    self.tableView.rowHeight = 200;
+//    self.tableView.rowHeight = 200;
     
     [self.tableView registerClass:[TableViewCell class] forCellReuseIdentifier:@"cell"];
 }
@@ -57,37 +57,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-    
-//    if (!cell) {
-//        cell = [[TableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"cell"];
-//    }else {
-//        // 当复用池获取的 cell 实例不为空时，删除其所有子视图，使其变“干净”。
-//        while ([cell.contentView.subviews lastObject] != nil) {
-//            [(UIView *)[cell.contentView.subviews lastObject] removeFromSuperview];
-//        }
-//    }
-    
-        MovieDataModel *model = [_movies objectAtIndex:indexPath.row];
-        [cell updateCellWithData:model andTableView:tableView indexPath:indexPath];
-    
-//    cell.imageView.image = [UIImage imageNamed:@"test_image.jpg"];
-//    cell.textLabel.text = @"2";
-//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld", indexPath.row];
-    
-//    if ([_movies count] > indexPath.row) {
-//        MovieDataModel *model = [_movies objectAtIndex:indexPath.row];
-//        cell.textLabel.text = [model title];
-        // download image
-//        NSURL *imageURL = [NSURL URLWithString: model.imgUrl];
-//        NSData *imageData = [NSData dataWithContentsOfURL:imageURL];
-//        cell.imageView.image = [UIImage imageWithData:imageData];
-        
-//        [self.downloader startDownloadImage: model.imgUrl];
-//        cell.imageView.image = [self.downloader  loadLocalImage: model.imgUrl];
-//        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-//    }
-    
-//    NSLog(@"cell addr: %p, row: %ld\n", cell, indexPath.row);
+    MovieDataModel *model = [_movies objectAtIndex:indexPath.row];
+    cell.model = model;
+    [cell updateCellWithModel:model tableView:tableView];
     return cell;
 }
 
@@ -96,12 +68,7 @@
 //    NSString *urlAsString = [NSString stringWithFormat:@"http://baidu.com"];
     NSString *urlAsString = [NSString stringWithFormat:@"https://api.androidhive.info/json/movies.json"];
 
-    NSCharacterSet *set = [NSCharacterSet URLQueryAllowedCharacterSet];
-    NSString *encodedUrlAsString = [urlAsString stringByAddingPercentEncodingWithAllowedCharacters:set];
-
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-
-    [[session dataTaskWithURL:[NSURL URLWithString:encodedUrlAsString]
+    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:urlAsString]
             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
 
 //        NSLog(@"RESPONSE: %@",response);
@@ -125,7 +92,7 @@
                     
                     // three times jsonitem
                     NSMutableArray *threeJson = [[NSMutableArray alloc] init];
-                    for (int i = 0; i < 1; i++) {
+                    for (int i = 0; i < 3; i++) {
                         [threeJson addObjectsFromArray:jsonResponse];
                     }
                     int i = 0; // row counter

@@ -10,15 +10,13 @@
 //#import "MovieDataModel.h"
 
 @class MovieDataModel;
-@class ImageDownloader;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface TableViewCell : UITableViewCell
 
-- (void)updateCellWithData:(MovieDataModel*)data andTableView:(UITableView*)tableView indexPath:(NSIndexPath*)indexPath;
-
-//-(void) getJSON;
+@property (nonatomic, strong) MovieDataModel* model;
+- (void)updateCellWithModel:(MovieDataModel*)model tableView:(UITableView*)tableView;
 
 @end
 

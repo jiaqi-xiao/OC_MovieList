@@ -15,59 +15,10 @@
 
 @implementation TableViewCell
 
-- (void)updateCellWithData:(MovieDataModel*)data andTableView:(UITableView*)tableView indexPath:(NSIndexPath*)indexPath;
+- (void)updateCellWithModel:(MovieDataModel*)model tableView:(UITableView*)tableView;
 {
-    //title
-    self.textLabel.text = data.title;
-    
-//    UIImage* image = [ImageDownloader loadLocalImage:data.imgUrl];
-//    if (!image) {
-//        self.imageView.image = [UIImage imageNamed:@"placeholder.jpg"];
-//
-//        // image
-//        [ImageDownloader startDownloadImage:data.imgUrl indexPath:indexPath completion:^(UIImage *image) {
-//            // 如果当前行还在当前屏幕内，就刷新，否则不刷新
-////            for (NSIndexPath* innnerIndexPath in tableView.indexPathsForVisibleRows) {
-////                if (innnerIndexPath.row == indexPath.row) {
-////                    self.imageView.image = image;
-////                    break;
-////                }
-////            }
-////            NSLog(@"#### %@, %@", data.imgUrl, imageUrl);
-//
-//            if ([tableView.indexPathsForVisibleRows containsObject: indexPath]) {
-//                self.imageView.image = image;
-//            }
-//        }];
-//
-//    } else {
-//        self.imageView.image = image;
-//    }
-    
-    // init dictionary
-//    [ImageDownloader imageDics];
-    
-    
-//    UIImage* image = [ImageDownloader loadLocalImage:data.imgUrl];
-//    if (!image) {
-//        self.imageView.image = [UIImage imageNamed:@"placeholder.jpg"];
-//
-//        // image
-//        [ImageDownloader startDownloadImage:data.imgUrl indexPath:indexPath completion:^(UIImage *image) {
-//            // 如果当前行还在当前屏幕内，就刷新，否则不刷新
-//            if ([tableView.indexPathsForVisibleRows containsObject: indexPath]) {
-//                self.imageView.image = image;
-//            }
-//        }];
-//
-//    } else {
-//        if ([tableView.indexPathsForVisibleRows containsObject: indexPath]) {
-//            self.imageView.image = image;
-//        }
-//    }
-    
-    [[ImageDownloader shareDownloader] updateCell:self imageUrl:data.imgUrl placeholderImage:[UIImage imageNamed:@"placeholder.jpg"]];
-    
+    self.textLabel.text = model.title;
+    [[ImageDownloader sharedDownloader] downloadImageWithModel:(MovieDataModel*)model tableView:tableView imageView:self.imageView placeholder:[UIImage imageNamed:@"placeholder.jpg"]];
 }
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
