@@ -23,9 +23,6 @@
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier];
-    if (self) {
-        self.imageView.image = [UIImage imageNamed:@"placeholder.jpg"];
-    }
     return self;
 }
 

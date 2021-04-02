@@ -16,17 +16,15 @@ static ImageDownloader* downloader = nil;
 
 @interface ImageDownloader ()
 
-@property (nonatomic, strong) dispatch_queue_t queue;
-@property (nonatomic, strong) dispatch_queue_t downloadQueue;
+@property (nonatomic, strong) dispatch_queue_t queue; // serial queue to cache images
+@property (nonatomic, strong) dispatch_queue_t downloadQueue; // concurrent queue to download images
 @property (nonatomic, strong) NSMutableDictionary* memoryCache;
-@property (nonatomic, strong) NSMutableArray* urlsRequesting;
-@property (nonatomic, strong) NSMutableDictionary* images;
+@property (nonatomic, strong) NSMutableArray* urlsRequesting; // current requesting urls
 
 @end
 
 @implementation ImageDownloader
 
-@dynamic imageDics;
 #pragma mark - 异步加载
 
 + (instancetype) sharedDownloader {
@@ -44,7 +42,6 @@ static ImageDownloader* downloader = nil;
         _downloadQueue = dispatch_get_global_queue(0, 0); //concurrent queue
         _memoryCache = [NSMutableDictionary dictionary];
         _urlsRequesting = [NSMutableArray array];
-        _images = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -53,34 +50,31 @@ static ImageDownloader* downloader = nil;
 {
     NSString* imageURL = model.imgUrl;
     UIImage* targetImage = [self loadCacheWithImageURL:imageURL];
-    if (!targetImage) {
-        //use placholder if targetimage not exist
+    if (!targetImage) { //no cache
+        //use placholder first if targetimage not exist
         imageView.image = placeholder;
         
-        if (![self.urlsRequesting containsObject:imageURL]) {
-            [self.urlsRequesting addObject:imageURL];
-            
+        if (![self.urlsRequesting containsObject:imageURL]) { // current image url is not being requested
+            [self.urlsRequesting addObject:imageURL]; // add url to requesting list
+            // concurrent download images
             dispatch_async(self.downloadQueue, ^{
+                // download iamge data
                 NSData* imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageURL]];
+                // successfully download
                 if (imageData) {
                     UIImage* origImage = [UIImage imageWithData:imageData];
+                    // cache image to memroy and disk
                     [self cacheDataWithImageURL:imageURL imageData:imageData image:origImage];
+                    // realodData to refresh the view
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [tableView reloadData];
-//                        for (TableViewCell* cell in tableView.visibleCells) {
-//                            NSUInteger innerRow = [tableView indexPathForCell:cell].row;
-//                            if (innerRow == model.row || model.imgUrl == cell.model.imgUrl) {
-//                                cell.imageView.image = origImage;
-//                                break;
-//                            }
-//                        }
                     });
                 }
+                // requeest complete and remove it from the requesting list
                 [self.urlsRequesting removeObject:imageURL];
             });
         }
-
-    } else {
+    } else { // get image from cache
         imageView.image = targetImage;
     }
 }
@@ -96,7 +90,7 @@ static ImageDownloader* downloader = nil;
     });
     return YES;
 }
-
+#pragma mark - 加载本地图像
 - (UIImage*)loadCacheWithImageURL:(NSString*)imageURL {
     if (!imageURL) {
         return nil;
@@ -114,78 +108,6 @@ static ImageDownloader* downloader = nil;
         }
     }
     return targetImage;
-}
-
-//- (void)updateCell:(UITableViewCell*)cell imageUrl:(NSString*)imageUrl placeholderImage:(UIImage*)placeholderImage {
-//    UIImage* image = [self loadLocalImage:imageUrl];
-//
-//    if (!image) {
-//        cell.imageView.image = placeholderImage;
-//            [self startDownloadImage:imageUrl completion:^(UIImage *image) {
-//                cell.imageView.image = image;
-//            }];
-//
-//    } else {
-//        cell.imageView.image = image;
-//    }
-//}
-
-//- (void)startDownloadImage:(NSString *)imageUrl completion:(void (^)(UIImage* image))completion
-//{
-//    // 先判断本地沙盒是否已经存在图像，存在直接获取，不存在再下载，下载后保存
-//    // 存在沙盒的Caches的子文件夹DownloadImages中
-//
-//    __block UIImage * image = nil;
-//
-//    if(image == nil) {
-//        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-//                NSData * imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUrl]];
-//                image = [UIImage imageWithData:imageData];
-////                NSLog(@"download image: %@", imageUrl);
-//                //write to model
-//    //            [imageDics setObject:image forKey:imageUrl];
-//    //            imageDics[imageUrl] = [UIImage imageWithData:imageData];
-//    //            [self addImageDics:imageUrl imageData:[UIImage imageWithData:imageData]];
-//
-//    //            if (imageDics[imageUrl]) {
-//    //                NSLog(@"write image to memory");
-//    //            }
-//                // write to cache
-////            if (![[NSFileManager defaultManager] fileExistsAtPath:[self imageFilePath:imageUrl]]) {
-//                [imageData writeToFile:[self imageFilePath:imageUrl] atomically:YES];
-////                NSLog(@"write image path: %@", [self imageFilePath:imageUrl]);
-////            }
-//
-////            //write to model
-////            [imageDics setObject:image forKey:[self imageFilePath:imageUrl]];
-////            NSLog(@"write image to memory");
-//
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                if (completion) {
-//                    completion(image);
-//                }
-//            });
-//        });
-//
-//    }
-    
-    
-//
-//    //IO
-//    image = [ImageDownloader loadLocalImage:imageUrl];
-//    else {
-//        if (completion) {
-//            completion(image, indexPath);
-//        }
-//    }
-//}
-
-
-#pragma mark - 加载本地图像
-- (UIImage *)loadLocalImage:(NSString *)imageUrl
-{
-    NSString * filePath = [self imageFilePath:imageUrl];
-    return [UIImage imageWithContentsOfFile:filePath];
 }
 
 #pragma mark - 获取图像路径

@@ -19,12 +19,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-//     self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
+    // clear cahce files
     NSString * cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
     NSString * downloadImagesPath = [cachesPath stringByAppendingPathComponent:@"DownloadImages"];
     [[NSFileManager defaultManager] removeItemAtPath:downloadImagesPath error:nil];
@@ -41,7 +36,6 @@
 #pragma mark - Table view data source
 
 //- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//#warning Incomplete implementation, return the number of sections
 //    return 0;
 //}
 
@@ -64,15 +58,11 @@
 }
 
 - (void)getData{
-//    NSString *urlAsString = [NSString stringWithFormat:@"https://raw.githubusercontent.com/facebook/react-native/0.51-stable/docs/MoviesExample.json"];
-//    NSString *urlAsString = [NSString stringWithFormat:@"http://baidu.com"];
+    // movie list json url
     NSString *urlAsString = [NSString stringWithFormat:@"https://api.androidhive.info/json/movies.json"];
-
+    // download from url
     [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:urlAsString]
             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-
-//        NSLog(@"RESPONSE: %@",response);
-//        NSLog(@"DATA: %@",data);
 
         if (!error) {
             // Success
@@ -85,10 +75,6 @@
 
                 } else {
                     // Success Parsing JSON
-                    // Log NSDictionary response:
-//                    NSLog(@"%@",jsonResponse);
-                    
-//                    NSArray *mArr = jsonResponse[@"movies"];
                     
                     // three times jsonitem
                     NSMutableArray *threeJson = [[NSMutableArray alloc] init];
@@ -98,9 +84,7 @@
                     int i = 0; // row counter
                     for (NSDictionary *item in threeJson) {
                         NSString *title = item[@"title"];
-//                        NSString *getImgUrl = item[@"posters"][@"thumbnail"];
                         NSString *imgUrl = item[@"image"];
-//                        NSLog(@"indexOfObject: %d", [threeJson indexOfObject:item]);
                         MovieDataModel *model = [[MovieDataModel alloc] initWithTitle:title imgUrl:imgUrl row:i++];
                         
                         [self.movies addObject:model];

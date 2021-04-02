@@ -90,14 +90,4 @@
     }] resume];
 }
 
-//- (void)changeText{
-////    [_arr addObject:@"item2"];
-////
-////    NSLog(@"strong Array: %@", _strArr);
-////    NSLog(@"copy Array: %@", _cpArr);
-//    getJSON();
-//}
-
-
-
 @end
