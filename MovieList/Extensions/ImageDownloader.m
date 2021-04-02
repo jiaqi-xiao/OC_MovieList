@@ -125,7 +125,7 @@ static ImageDownloader* downloader = nil;
         [fileManager createDirectoryAtPath:downloadImagesPath withIntermediateDirectories:YES attributes:nil error:nil];
     }
 
-#pragma mark 拼接图像文件在沙盒中的路径,因为图像URL有"/",要在存入前替换掉,随意用"_"代替
+    // 拼接图像文件在沙盒中的路径,因为图像URL有"/",要在存入前替换掉,随意用"_"代替
     NSString * imageName = [imageUrl stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
     NSString * imageFilePath = [downloadImagesPath stringByAppendingPathComponent:imageName];
 

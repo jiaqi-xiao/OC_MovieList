@@ -11,7 +11,7 @@
         <!--Movie List-->
         <scene sceneID="g2w-tk-Fw0">
             <objects>
-                <tableViewController id="DRN-E4-gbg" customClass="TableTableViewController" sceneMemberID="viewController">
+                <tableViewController id="DRN-E4-gbg" customClass="TableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="K6P-1t-V48">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

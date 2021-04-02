@@ -1,20 +1,20 @@
 //
-//  TableTableViewController.m
+//  TableViewController.m
 //  MovieList
 //
 //  Created by xiaojiaqi03 on 2021/3/26.
 //
 
-#import "TableTableViewController.h"
+#import "TableViewController.h"
 #import "TableViewCell.h"
 #import "MovieDataModel.h"
 #import "ImageDownloader.h"
 
-@interface TableTableViewController ()
+@interface TableViewController ()
 
 @end
 
-@implementation TableTableViewController
+@implementation TableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -53,6 +53,7 @@
     TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     MovieDataModel *model = [_movies objectAtIndex:indexPath.row];
     cell.model = model;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld",(long)indexPath.row];
     [cell updateCellWithModel:model tableView:tableView];
     return cell;
 }
