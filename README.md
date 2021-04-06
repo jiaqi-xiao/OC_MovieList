@@ -2,7 +2,7 @@
 
 ## Demo 展示
 
-![IMG_0004](/Users/xiaojiaqi03/Kwai/Playground/OC_MovieList/README.assets/IMG_0004.PNG)
+![IMG_0004](/Users/xiaojiaqi03/Kwai/Playground/OC_MovieList/assets/IMG_0004.PNG)
 
 ## Demo要求
 
